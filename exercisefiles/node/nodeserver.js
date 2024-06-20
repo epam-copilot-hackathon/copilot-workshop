@@ -3,6 +3,7 @@ const url = require('url');
 const colors = require('./colors.json');
 const fs = require('fs');
 const readline = require('readline');
+const axios = require('axios');
 
 const app = express();
 
@@ -80,6 +81,16 @@ app.get('/ReturnColorCode', (req, res) => {
             }
         }
     });
+});
+
+app.get('/TellMeAJoke', (req, res) => {
+    axios.get('https://official-joke-api.appspot.com/random_joke')
+        .then(response => {
+            res.send(response.data.setup + ' ' + response.data.punchline);
+        })
+        .catch(error => {
+            res.send('Error fetching joke');
+        });
 });
 
 
