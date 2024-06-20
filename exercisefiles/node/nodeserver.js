@@ -42,6 +42,31 @@ app.get('/Validatephonenumber', (req, res) => {
     }
 });
 
+
+// /ValidateSpanishDNI:
+
+//     Receive by querystring a parameter called dni
+//     calculate DNI letter
+//     if DNI is valid return "valid"
+//     if DNI is not valid return "invalid"
+
+app.get('/ValidateSpanishDNI', (req, res) => {
+    const dni = req.query.dni;
+    const dniRegex = /^\d{8}[A-Z]$/;
+    if (!dniRegex.test(dni)) {
+        res.send('invalid');
+    } else {
+        const letter = 'TRWAGMYFPDXBNJZSQVHLCKE';
+        const letterIndex = parseInt(dni.substring(0, 8)) % 23;
+        if (letter[letterIndex] === dni[8]) {
+            res.send('valid');
+        } else {
+            res.send('invalid');
+        }
+    }
+});
+
+
 app.get('*', (req, res) => {
     res.send('method not supported');
 });
