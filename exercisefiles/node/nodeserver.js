@@ -1,32 +1,51 @@
+const express = require('express');
 const url = require('url');
-const http = require('http');
+const colors = require('./colors.json');
+const fs = require('fs');
+const readline = require('readline');
 
+const app = express();
 
-const server = http.createServer((req, res) => {
+app.get('/get', (req, res) => {
     const parsedUrl = url.parse(req.url, true);
-    const { pathname, query } = parsedUrl;
+    const { query } = parsedUrl;
 
-    if (pathname === '/get') {
-        const key = query.key;
-        if (!key) {
-            res.end('hello world');
-        } else {
-            res.end(`hello ${key}`);
-        }
-    } else if (pathname === '/DaysBetweenDates') {
-        const date1 = query.date1;
-        const date2 = query.date2;
-        if (!date1 || !date2) {
-            res.end('Both date1 and date2 parameters are required');
-        } else {
-            const daysBetween = Math.floor((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
-            res.end(`Days between ${date1} and ${date2}: ${daysBetween}`);
-        }
+    const key = query.key;
+    if (!key) {
+        res.send('hello world');
     } else {
-        res.end('method not supported');
+        res.send(`hello ${key}`);
     }
 });
 
-server.listen(3000, () => {
-    console.log('server is listening on port 3000');
+app.get('/DaysBetweenDates', (req, res) => {
+    const parsedUrl = url.parse(req.url, true);
+    const { query } = parsedUrl;
+
+    const date1 = query.date1;
+    const date2 = query.date2;
+    if (!date1 || !date2) {
+        res.send('Both date1 and date2 parameters are required');
+    } else {
+        const daysBetween = Math.floor((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
+        res.send(`Days between ${date1} and ${date2}: ${daysBetween}`);
+    }
+});
+//validate phoneNumber with Spanish format, for example +34666777888
+app.get('/Validatephonenumber', (req, res) => {
+    const phoneNumber = req.query.phoneNumber;
+    const phoneNumberRegex = /^\+34\d{9}$/;
+    if (phoneNumberRegex.test(phoneNumber)) {
+        res.send('valid');
+    } else {
+        res.send('invalid');
+    }
+});
+
+app.get('*', (req, res) => {
+    res.send('method not supported');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
