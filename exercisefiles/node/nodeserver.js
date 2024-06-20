@@ -65,6 +65,22 @@ app.get('/ValidateSpanishDNI', (req, res) => {
         }
     }
 });
+app.get('/ReturnColorCode', (req, res) => {
+    const colorQuery = req.query.color;
+    fs.readFile('./colors.json', (err, data) => {
+        if (err) {
+            res.send('Error reading colors.json');
+        } else {
+            const colors = JSON.parse(data);
+            const color = colors.find(c => c.color === colorQuery);
+            if (color) {
+                res.send(color.rgba);
+            } else {
+                res.send('Color not found');
+            }
+        }
+    });
+});
 
 
 app.get('*', (req, res) => {
