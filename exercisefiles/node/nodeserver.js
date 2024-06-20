@@ -4,6 +4,8 @@ const colors = require('./colors.json');
 const fs = require('fs');
 const readline = require('readline');
 const axios = require('axios');
+const API_KEY = 'your_api_key_here'; // replace with your actual API key
+
 
 const app = express();
 
@@ -93,6 +95,19 @@ app.get('/TellMeAJoke', (req, res) => {
         });
 });
 
+
+
+
+app.get('/MoviesByDirector', (req, res) => {
+    const director = req.query.director;
+    axios.get(`http://movieapi.com/director?name=${director}&apiKey=${API_KEY}`)
+        .then(response => {
+            res.send(response.data);
+        })
+        .catch(error => {
+            res.send('Error fetching movies');
+        });
+});
 
 app.get('*', (req, res) => {
     res.send('method not supported');
